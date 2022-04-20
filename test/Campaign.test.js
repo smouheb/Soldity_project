@@ -37,9 +37,57 @@ describe("My test", () => {
   });
 
   it("Can contribute", async () => {
-    assert.ok(campaign.methods.contribute().send({from: accounts[0], value:'101'}));
-    const a = await campaign.methods.approvers(accounts[1]).call()
-    console.log(a);
-    // assert.equal()
+    const cmp = await campaign.methods.contribute().send({from: accounts[1], value:'101'});
+    const a = await campaign.methods.approvers(accounts[1]).call();
+    assert.equal(cmp.from.toLowerCase(), accounts[1].toLowerCase());
   });
+
+  it("Requires a minimum contribution", async () => {
+    try {
+      const a = await campaign.methods.contribute().send({from: accounts[1], value:'101'});
+      assert(false);
+    } catch(err) {
+      assert(err);
+    }
+  });
+
+  it("Create a request", async () => {
+    await campaign.methods
+                    .createRequest('Buy house', '1000', accounts[1])
+                    .send({
+                      from: accounts[0],
+                      gas: '1000000'
+                    });
+    const res = await campaign.methods.requests(0).call();
+    assert.equal('Buy house', res.description);
+  });
+
+
+  it("Creat and End to end flow", async () => {
+    await campaign.methods
+          .contribute()
+          .send({
+            from: accounts[1],
+            value: web3.utils.toWei('10', 'ether')
+          });
+
+    await campaign.methods
+          .createRequest('A', web3.utils.toWei('5', 'ether'), accounts[2])
+          .send({from: accounts[0], gas: '1000000'});
+
+    await campaign.methods
+          .approveRequest(0)
+          .send({from: accounts[1], gas: '1000000'});
+
+    const a = await campaign.methods
+          .finalizeRequest(0)
+          .send({from: accounts[0], gas: '1000000'});
+
+    const balance_raw = await web3.eth.getBalance(accounts[2]);
+    const balance = parseFloat(web3.utils.fromWei(balance_raw, 'ether'));
+
+    assert(balance > 100);
+
+  });
+
 });
