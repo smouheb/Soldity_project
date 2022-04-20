@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import {Card, Button} from 'semantic-ui-react';
 import factory from '../ethereum/factory';
+import Layout from '../component/Layout';
 
 class Campaign extends Component {
 
@@ -11,6 +12,7 @@ class Campaign extends Component {
   }
 
   renderCampaign(){
+
     const campaignForm = this.props.campaign.map(address => {
       return {
         header: address,
@@ -18,16 +20,18 @@ class Campaign extends Component {
         fluid: true
       };
     });
-
     return <Card.Group items={campaignForm}/>;
   }
 
   render(){
-    return <div>
-    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.12/semantic.min.css"></link>
-    {this.renderCampaign()}
-    <Button content="Add Capaign" icon="add circle" primary />
-    </div>
+    return(
+      <div>
+        <Layout/>
+        <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.12/semantic.min.css"></link>
+        {this.renderCampaign()}
+        <Button content="Add Campaign" icon="add circle" primary />
+      </div>
+  );
   }
 }
 
