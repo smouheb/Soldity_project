@@ -1,17 +1,21 @@
 import React from 'react';
-import {Menu, Input} from 'semantic-ui-react';
+import {Card, Button, Container} from 'semantic-ui-react';
+import Head from 'next/head';
 
-export default props => {
+import Header from './Header';
+
+const Layout = (props) => {
   return (
-    <Menu>
-      <Menu.Item name='home'/>
-      <Menu.Item name='campaign'/>
-      <Menu.Item header> Our Company </Menu.Item>
-      <Menu.Menu position="right">
-      <Menu.Item>
-        <Input icon='search' placeholder='Search...' />
-      </Menu.Item>
-      </Menu.Menu>
-    </Menu>
+    <Container >
+      <Head>
+        <link
+          rel="stylesheet"
+          href="//cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.12/semantic.min.css"></link>
+      </Head>
+
+      <Header />
+      {props.children}
+    </Container>
   );
 };
+export default Layout;

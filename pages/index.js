@@ -1,38 +1,40 @@
-import React, { Component } from 'react';
-import {Card, Button} from 'semantic-ui-react';
-import factory from '../ethereum/factory';
-import Layout from '../component/Layout';
+import React, { Component } from "react";
+import { Card, Button } from "semantic-ui-react";
+import factory from "../ethereum/factory";
+import Layout from "../component/Layout";
 
-class Campaign extends Component {
+class CampaignIndex extends Component {
+  static async getInitialProps() {
+    const campaigns = await factory.methods.getDeployedCampaigns().call();
 
-  static async getInitialProps(){
-    const campaign = await factory.methods.getDeployedCampaigns().call();
-
-    return { campaign };
+    return { campaigns };
   }
-
-  renderCampaign(){
-
-    const campaignForm = this.props.campaign.map(address => {
+  renderCampaigns() {
+    const items = this.props.campaigns.map((address) => {
       return {
         header: address,
-        description: <a>Campaign details</a>,
-        fluid: true
+        description: <a>View Campaign</a>,
+        fluid: true,
       };
     });
-    return <Card.Group items={campaignForm}/>;
+    return <Card.Group items={items} />;
   }
+  render() {
+    return (
+      <Layout>
+        <div>
+        
+          <h3>Open Campaigns</h3>
 
-  render(){
-    return(
-      <div>
-        <Layout/>
-        <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.12/semantic.min.css"></link>
-        {this.renderCampaign()}
-        <Button content="Add Campaign" icon="add circle" primary />
-      </div>
-  );
+          <Button
+          floated="right"
+          content="Create Campaign"
+          icon="add circle" primary />
+          {this.renderCampaigns()}
+        </div>
+      </Layout>
+    );
   }
 }
 
-export default Campaign;
+export default CampaignIndex;
